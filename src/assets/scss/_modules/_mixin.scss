@@ -1,0 +1,136 @@
+@use "sass:map";
+
+$breakpoints: (
+  "sm": "screen and (max-width: 767px)",
+  // モバイル向け（デフォルトのスタイルで上書き不要な場合に使用）
+  "tb": "screen and (min-width: 768px)",
+  // タブレット向けスタイル
+  "pc": "screen and (min-width: 1200px)",
+  // デスクトップ向けスタイル
+) !default;
+
+@mixin mq($breakpoint: "sm") {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media #{map.get($breakpoints, $breakpoint)} {
+      @content;
+    }
+  } @else {
+    @error "ブレークポイント `#{$breakpoint}` は定義されていません。";
+  }
+}
+
+// フラットなボタン
+@mixin flat-button($bg-color, $text-color, $hover-color) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+}
+/*
+  使用例
+  .my-button {
+    @include flat-button(#3498db, #ffffff, #2980b9);
+  }
+    **/
+
+// アウトラインボタン
+@mixin outline-button($border-color, $text-color, $hover-bg, $hover-text) {
+  background-color: transparent;
+  color: $text-color;
+  border: 2px solid $border-color;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-bg;
+    color: $hover-text;
+  }
+}
+/*
+  使用例
+  .my-outline-button {
+  @include outline-button(#3498db, #3498db, #3498db, #ffffff);
+}
+**/
+
+//グラデーションボタン
+@mixin gradient-button($gradient, $text-color, $hover-gradient) {
+  background: $gradient;
+  color: $text-color;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: $hover-gradient;
+  }
+}
+/*
+.my-gradient-button {
+  @include gradient-button(
+    linear-gradient(to right, #ff7e5f, #feb47b),
+    #ffffff,
+    linear-gradient(to right, #feb47b, #ff7e5f)
+  );
+}
+**/
+
+//シャドウ付きボタン
+@mixin shadow-button($bg-color, $text-color, $shadow-color, $hover-shadow) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px $shadow-color;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 8px $hover-shadow;
+  }
+}
+/*
+  .my-shadow-button {
+    @include shadow-button(#2ecc71, #ffffff, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  }
+**/
+
+// 丸型ボタン
+@mixin circle-button($size, $bg-color, $icon-color, $hover-bg) {
+  background-color: $bg-color;
+  color: $icon-color;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-bg;
+  }
+}
+/*
+  .my-circle-button {
+  @include circle-button(50px, #e74c3c, #ffffff, #c0392b);
+}
+**/
