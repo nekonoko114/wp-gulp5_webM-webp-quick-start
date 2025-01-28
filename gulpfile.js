@@ -95,16 +95,18 @@ function convertToWebP() {
 
 // 動画をWebM形式に変換するタスク
 function convertToWebM() {
-  const inputDir = 'src/assets/videos';
-  const outputDir = paths.dist.videos;
-
-  return shell.task([
-    `mkdir -p ${outputDir}`, // 出力ディレクトリを作成
-    `find ${inputDir} -type f \\( -name "*.mp4" -o -name "*.mov" \\) | while read file; do ` +
-    `filename=$(basename "$file" | cut -d. -f1); ` +
-    `ffmpeg -i "$file" -c:v libvpx -b:v 1M -c:a libvorbis "${outputDir}/$filename.webm" || echo "Error processing $file"; ` +
-    `done`,
-  ])();
+  return src(paths.videos)
+    .pipe(
+      newer({
+        dest: paths.dist.videos, // 出力先ディレクトリを指定
+        ext: '.webm', // 出力ファイルの拡張子を指定
+      })
+    )
+    .pipe(
+      shell([
+        `ffmpeg -i "<%= file.path %>" -c:v libvpx -b:v 1M -c:a libvorbis "${paths.dist.videos}/<%= file.stem %>.webm"`,
+      ])
+    );
 }
 
 

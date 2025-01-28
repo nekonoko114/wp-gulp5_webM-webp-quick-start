@@ -1,6 +1,7 @@
 # Gulp Workflow Project
 
 このプロジェクトは、Web開発を効率化するためのGulpタスクランナーを使用したワークフローを提供します。開発環境と本番環境を切り替える柔軟な設定を含み、Sassコンパイル、画像最適化、動画変換などの機能を備えています。
+WordPress開発のために制作をした社内の業務改善のためのツールです。
 
 ---
 
@@ -51,7 +52,7 @@ npm install
 NODE_ENV=development npx gulp
 
 ```
-### **2. 本番モードでのビルド **
+### **3. 本番モードでのビルド **
 ```
 NODE_ENV=production npx gulp
 ```
@@ -71,8 +72,9 @@ ffmpeg を利用して動画をWebM形式に変換。
 ブラウザ同期
 browser-sync によるリアルタイムのブラウザリロード。
 
-## 🚀 必要なツール
+##  必要なツール
 - **Node.js**（最新のLTSバージョンを推奨）
 - **Gulp CLI**
 - **ffmpeg**（動画変換に必要）
-- **ffmpeg** のインストール（macOSの場合）： ```brew install ffmpeg```
+- **ffmpeg** のインストール（macOSの場合）： 
+```brew install ffmpeg```
