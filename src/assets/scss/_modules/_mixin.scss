@@ -134,3 +134,46 @@ $breakpoints: (
   @include circle-button(50px, #e74c3c, #ffffff, #c0392b);
 }
 **/
+
+
+
+.c-btn {
+  @include flat-button(#3498db, #ffffff, #2980b9);
+  margin: 20px;
+  display: inline-block;
+}
+
+.c-btn-outline-primary{
+@include outline-button(#3498db, #3498db, #3498db, #ffffff);
+}
+.c-btn-gradient-orange{
+@include gradient-button(
+  linear-gradient(to right, #ff7e5f, #feb47b),
+  #ffffff,
+  linear-gradient(to right, #feb47b, #ff7e5f)
+);
+}
+.c-btn-shadow-green{
+@include shadow-button(
+  #2ecc71,
+  #ffffff,
+  rgba(0, 0, 0, 0.2),
+  rgba(0, 0, 0, 0.4)
+);
+}
+
+
+@mixin transform-xy-center($left: 50%, $top: 50%) {
+  left: $left;
+  top: $top;
+  transform: translate(-$left, -$top);
+}
+
+@mixin transform-x-center($left: 50%) {
+  left: $left;
+  transform: translateX(-$left);
+}
+@mixin transform-y-center($top: 50%) {
+  top: $top;
+  transform: translateY(-$top);
+}

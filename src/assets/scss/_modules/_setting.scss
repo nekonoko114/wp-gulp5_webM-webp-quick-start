@@ -1,13 +1,17 @@
 @use "./color" as *;
+@use "./fonts" as *;
+@use "./mixin" as *;
+@use "./varable" as *;
+
 html {
   font-size: 16px;
 }
 body {
   font-family: serif;
-  background-color: $site-color;
   color: #000;
   font-size: 1rem; /* 16pxを基準にした相対サイズ */
   line-height: 1.5; /* 可読性を向上させる行間 */
+  letter-spacing: 2px;
 }
 html,
 body {
@@ -26,4 +30,25 @@ video {
   padding: 20px;
   width: 1280px;
   margin: 0 auto;
+}
+ul,ol,li {
+    list-style: none;
+}
+
+a {
+    color: $ancher-link;
+    text-decoration: none;
+}
+
+.l-flex {
+  display: flex;
+}
+
+.btn {
+  @include flat-button(#3498db, #ffffff, #2980b9);
+}
+
+
+.wp-block-heading {
+  margin: 16px 0;
 }

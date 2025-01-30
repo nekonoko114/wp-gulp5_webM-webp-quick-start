@@ -4,3 +4,8 @@
 @use "./mixin";
 
 @use "../top/kv";
+@use "../components/header";
+@use "../components/footer";
+@use "../components/sidebar";
+
+@use "../common/common-style";

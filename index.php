@@ -1,27 +1,43 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css"/>
-    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/style.css">
-    <title>g-create-theme</title>
-</head>
-<body>
+<?php get_header(); ?>
 
-    
 
-    
-    <video src="<?php echo get_template_directory_uri();?>/assets/videos/27039_1920x1080.webm" autoplay loop controls></video>
-    <p>ここにはメインビジュアルが入ります</p>
+<main id="main-content">
+    <?php if (have_posts()) : ?>
+        <div class="archive-posts">
+            <?php while (have_posts()) : the_post(); ?>
+                <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                    <div class="entry-thumbnail">
+                        <?php
+                        if (has_post_thumbnail()) : the_post_thumbnail();
+                        endif
+                        ?>
+                    </div>
+                    <div class="entry-header">
+                        <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+                    </div>
+                    <div class="entry-meta">
+                        <span class="posted-on"><?php the_time('Y-m-d'); ?></span>
+                    </div>
 
-    <div class="btn-flex">
-        <div class="btn"><a>1ボタン</a></div>
-        <div class="btn"><a>2ボタン</a></div>
-        <div class="btn"><a>3ボタン</a></div>
-        <div class="btn"><a>4ボタン</a></div>
-        <div class="btn"><a>5ボタン</a></div>
-    </div>
+                </article>
+            <?php endwhile; ?>
+        </div>
 
-</body>
-</html>
+        <div class="pagination">
+            <?php
+            the_posts_pagination(array(
+                'mid_size' => 1,
+                'prev_next' => false,
+                'type' => 'list',
+            ));
+            ?>
+        </div>
+    <?php else : ?>
+        <p><?php esc_html_e('No posts found.', 'your-theme-textdomain'); ?></p>
+    <?php endif; ?>
+    </section>
+</main>
+
+
+
+<?php get_footer(); ?>

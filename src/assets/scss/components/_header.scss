@@ -1,0 +1,60 @@
+@use "../_modules/color" as *;
+@use "../_modules/mixin" as *;
+@use "../_modules/setting" as *;
+@use "../_modules/varable" as *;
+
+.header {
+    width: 100%;   
+    background: $main-color;
+}
+
+.header-inner.l-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1280px;
+}
+
+.header-logo {
+    img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+.header-ul {
+    display: flex;
+    li {
+        margin-left: 16px;
+        a {
+            position: relative;
+            color: #fff;
+            display: inline-block;
+            padding-bottom: 10px;
+            
+            &::after {
+                position: absolute;
+                content: "";
+                height: 2px;
+                background: orange;
+                left: 0;
+                bottom: -2px;
+                width: 0;
+                transition: all 0.3s ease 0s;
+                opacity: 0;
+            }
+            &[aria-current="page"] {
+                color: orange;
+                font-weight: bold;
+                border-bottom: 2px solid orange;
+                
+            }
+
+            &:hover::after  {
+                opacity: 1;
+                width: 100%;
+            }
+        }
+    }
+}
+

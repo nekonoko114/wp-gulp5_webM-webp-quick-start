@@ -6,16 +6,18 @@ import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import browserSync from 'browser-sync';
 import imagemin from 'gulp-imagemin';
+import path from 'path'; 
 
 import uglify from 'gulp-uglify';
 import groupCssMediaQueries from 'gulp-group-css-media-queries';
 import sourcemaps from 'gulp-sourcemaps';
 import newer from 'gulp-newer';
 
-//画像の圧縮
+//画像の変換
 import webp from 'gulp-webp';
-//動画の圧縮 ffmpeg
+//動画の ffmpeg
 import shell from 'gulp-shell';
+import { execSync } from 'child_process';
 
 // Sassコンパイラの設定
 const compileSass = gulpSass(sass); 
@@ -28,7 +30,7 @@ const isProduction = process.env.NODE_ENV === 'production' || false;
 const paths = {
   scss: 'src/assets/scss/**/*.scss',
   js: 'src/assets/js/**/*.js',
-  images: 'src/assets/images/**/*.{jpg,png}',
+  images: 'src/assets/images/**/*.{jpg,png,gif}',
   videos: 'src/assets/videos/**/*.{mp4,mov}',
   dist: {
     css: 'assets/css',
@@ -68,12 +70,12 @@ function compressJs() {
 
 // 画像の最適化タスク
 function optimizeImages() {
-  return src(paths.images)
+  return src(paths.images,{encoding: false})
     .pipe(newer(paths.dist.images))
     .pipe(
       imagemin(
         isProduction
-          ? [imagemin.mozjpeg({ quality: 75 }), imagemin.optipng({ optimizationLevel: 5 })]
+          ? [imagemin.mozjpeg({ quality: 80 }), imagemin.optipng({ optimizationLevel: 5 })]
           : []
       )
     )
@@ -83,15 +85,48 @@ function optimizeImages() {
 
 
 function convertToWebP() {
-  return src(paths.images)
+  return src('src/assets/images/**/*.{jpg,png}', { encoding: false }) // GIF を除外
+    .pipe(newer(paths.dist.images))
     .pipe(
       webp({
         quality: 80,
+        lossless: false,
         method: 6,
+        alphaQuality: 80,
       })
     )
-    .pipe(dest(paths.dist.images)); // WebP画像を出力
+    .pipe(dest(paths.dist.images));
 }
+
+
+// GIF → WebP 変換タスク（フォルダ構造を維持）
+function convertGifToWebP(done) {
+  const sourceFiles = 'src/assets/images/**/*.gif';
+  const baseSrcPath = path.resolve('src/assets/images'); // ✅ 基準ディレクトリ
+  const baseDestPath = path.resolve('assets/images'); // ✅ 出力ディレクトリ
+
+  return src(sourceFiles)
+    .pipe(newer(baseDestPath)) // ✅ 既存の WebP があればスキップ
+    .on('data', (file) => {
+      const inputPath = file.path;
+      const relativePath = path.relative(baseSrcPath, inputPath); // ✅ 相対パスを取得
+      const outputPath = path.join(baseDestPath, relativePath.replace(/\.gif$/, '.webp')); // ✅ 元の構造を維持
+
+      // 出力ディレクトリを作成
+      const outputDir = path.dirname(outputPath);
+      execSync(`mkdir -p "${outputDir}"`);
+
+      try {
+        console.log(`Converting: ${inputPath} → ${outputPath}`);
+        execSync(`gif2webp -q 80 "${inputPath}" -o "${outputPath}"`, { stdio: 'inherit' });
+        console.log(`Converted successfully: ${outputPath}`);
+      } catch (error) {
+        console.error(`Error converting ${inputPath}:`, error.message);
+      }
+    })
+    .on('end', done);
+}
+
 
 // 動画をWebM形式に変換するタスク
 function convertToWebM() {
@@ -108,8 +143,6 @@ function convertToWebM() {
       ])
     );
 }
-
-
 
 // ブラウザ同期の初期化
 function browserSyncInit(done) {
@@ -133,7 +166,8 @@ function watchFiles() {
 
 // デフォルトタスクのエクスポート
 export default series(
-  parallel(sassTask, compressJs, optimizeImages, convertToWebP, convertToWebM), 
+  parallel(sassTask, compressJs, optimizeImages, convertToWebP, convertGifToWebP, convertToWebM), 
   browserSyncInit,
   watchFiles
 );
+
